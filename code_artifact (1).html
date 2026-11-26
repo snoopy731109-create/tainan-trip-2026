@@ -1,0 +1,1333 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>44歲大叔們的台南五專畢業旅行｜12/5-12/6 互動地圖與分帳</title>
+    <!-- 引入 Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- 引入 Google Fonts 日式手繪感字體 (Noto Serif TC & Zen Maru Gothic) -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700&family=Noto+Serif+TC:wght@600;700;900&family=Zen+Maru+Gothic:wght@500;700;900&display=swap" rel="stylesheet">
+    
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        washi: '#FAF6EE',
+                        washiDark: '#F0E8D8',
+                        ink: '#4A3B32',
+                        inkLight: '#7A685D',
+                        day1: '#D96B43',
+                        day1Light: '#FCECE6',
+                        day2: '#3B6E8C',
+                        day2Light: '#E6F0F5',
+                        matcha: '#6B8E6E',
+                        mustard: '#E5B85C'
+                    },
+                    fontFamily: {
+                        sans: ['"Zen Maru Gothic"', '"Noto Sans TC"', 'sans-serif'],
+                        serif: ['"Noto Serif TC"', 'serif']
+                    }
+                }
+            }
+        }
+    </script>
+
+    <style>
+        /* 日式和紙底紋與手繪質感樣式 */
+        body {
+            background-color: #FAF6EE;
+            background-image: 
+                radial-gradient(rgba(74, 59, 50, 0.04) 1px, transparent 0),
+                radial-gradient(rgba(217, 107, 67, 0.03) 1px, transparent 0);
+            background-size: 24px 24px;
+            background-position: 0 0, 12px 12px;
+            color: #4A3B32;
+            font-family: 'Zen Maru Gothic', 'Noto Sans TC', sans-serif;
+        }
+
+        /* 手繪不規則墨線邊框 */
+        .hand-drawn-box {
+            border: 2.5px solid #4A3B32;
+            border-radius: 16px 22px 18px 20px / 20px 16px 22px 18px;
+            box-shadow: 4px 4px 0px rgba(74, 59, 50, 0.18);
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+        }
+
+        .hand-drawn-card {
+            border: 2px solid #4A3B32;
+            border-radius: 14px 18px 15px 17px / 17px 14px 18px 15px;
+            box-shadow: 3px 3px 0px rgba(74, 59, 50, 0.15);
+            transition: all 0.2s ease;
+        }
+
+        .hand-drawn-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 4px 5px 0px rgba(74, 59, 50, 0.25);
+        }
+
+        .hand-drawn-btn {
+            border: 2px solid #4A3B32;
+            border-radius: 12px 15px 13px 14px / 14px 12px 15px 13px;
+            box-shadow: 2px 2px 0px #4A3B32;
+            transition: all 0.15s ease;
+        }
+
+        .hand-drawn-btn:active {
+            transform: translate(2px, 2px);
+            box-shadow: 0px 0px 0px #4A3B32;
+        }
+
+        /* SVG 地圖路線流動動畫 */
+        @keyframes dashFlow {
+            to {
+                stroke-dashoffset: -48;
+            }
+        }
+
+        .route-animated {
+            stroke-dasharray: 10 6;
+            animation: dashFlow 2.5s linear infinite;
+        }
+
+        /* 站點脈衝高光 */
+        @keyframes pulseRing {
+            0% { transform: scale(0.95); opacity: 0.9; }
+            50% { transform: scale(1.25); opacity: 0.4; }
+            100% { transform: scale(0.95); opacity: 0.9; }
+        }
+
+        .node-pulse {
+            transform-origin: center;
+            transform-box: fill-box;
+            animation: pulseRing 2s ease-in-out infinite;
+        }
+
+        /* 自訂捲軸 */
+        ::-webkit-scrollbar {
+            width: 8px;
+            height: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #F0E8D8;
+            border-radius: 8px;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #B5A496;
+            border-radius: 8px;
+            border: 2px solid #F0E8D8;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #7A685D;
+        }
+    </style>
+</head>
+<body class="min-h-screen flex flex-col selection:bg-mustard selection:text-ink">
+
+    <!-- 頂部手繪風標題列 -->
+    <header class="bg-washi/95 backdrop-blur-sm border-b-2 border-ink sticky top-0 z-30 px-4 py-3 shadow-sm">
+        <div class="max-w-7xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-2">
+            <div class="flex items-center gap-3">
+                <!-- 手繪小汽車 SVG 圖示 -->
+                <div class="w-11 h-11 bg-mustard rounded-full border-2 border-ink flex items-center justify-center shrink-0 shadow-[2px_2px_0_#4A3B32]">
+                    <svg class="w-7 h-7 text-ink" viewBox="0 0 36 36" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M5 21h26v4a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2v-4z" fill="#D96B43"/>
+                        <path d="M8 21l3-8h14l3 8" fill="#FFFDF9"/>
+                        <circle cx="10.5" cy="27" r="2.8" fill="#4A3B32"/>
+                        <circle cx="25.5" cy="27" r="2.8" fill="#4A3B32"/>
+                        <path d="M18 13v8M13 17h10"/>
+                    </svg>
+                </div>
+                <div>
+                    <div class="flex items-center gap-2 flex-wrap">
+                        <span class="text-xs font-bold px-2 py-0.5 bg-day1 text-white rounded-full border border-ink">12/5 - 12/6 兩天一夜</span>
+                        <span class="text-xs font-bold px-2 py-0.5 bg-matcha text-white rounded-full border border-ink">5位44歲五專老同學</span>
+                    </div>
+                    <h1 class="text-xl sm:text-2xl font-serif font-black tracking-wide text-ink mt-0.5">
+                        大叔們的台南五專畢業旅行
+                    </h1>
+                </div>
+            </div>
+
+            <!-- 行程摘要標籤 -->
+            <div class="hidden md:flex items-center gap-3 text-sm font-bold text-inkLight bg-washiDark px-3.5 py-1.5 rounded-xl border border-ink/40">
+                <span>🚗 台中高鐵集合自駕出發</span>
+                <span>•</span>
+                <span>🍊 玉井山城</span>
+                <span>•</span>
+                <span>🦐 安平與七股</span>
+                <span>•</span>
+                <span>☕ 社頭咖啡返程</span>
+            </div>
+        </div>
+    </header>
+
+    <!-- 手機版分頁切換導覽列 (僅在 lg 以下顯示) -->
+    <nav class="lg:hidden bg-washiDark border-b-2 border-ink px-3 py-2 sticky top-[74px] z-20">
+        <div class="grid grid-cols-3 gap-2 max-w-md mx-auto">
+            <button onclick="switchMobileTab('map')" id="tab-btn-map" class="hand-drawn-btn py-2 px-2 text-sm font-bold bg-mustard text-ink flex items-center justify-center gap-1">
+                <span>🗺️</span> 路線地圖
+            </button>
+            <button onclick="switchMobileTab('itinerary')" id="tab-btn-itinerary" class="hand-drawn-btn py-2 px-2 text-sm font-bold bg-white text-ink flex items-center justify-center gap-1">
+                <span>📋</span> 行程明細
+            </button>
+            <button onclick="switchMobileTab('split')" id="tab-btn-split" class="hand-drawn-btn py-2 px-2 text-sm font-bold bg-white text-ink flex items-center justify-center gap-1">
+                <span>💰</span> 5人分帳
+            </button>
+        </div>
+    </nav>
+
+    <!-- 主內容區：桌面版左右雙欄，手機版單欄切換 -->
+    <main class="flex-1 max-w-7xl w-full mx-auto p-3 sm:p-5 grid grid-cols-1 lg:grid-cols-12 gap-5 items-start">
+
+        <!-- 左欄：互動式手繪 SVG 路線地圖 (佔 7 欄) -->
+        <section id="panel-map" class="lg:col-span-7 flex flex-col gap-3">
+            <div class="hand-drawn-box bg-[#FFFDF9] p-3 sm:p-4 relative overflow-hidden">
+                
+                <!-- 地圖上方控制列：天數篩選器 -->
+                <div class="flex flex-wrap items-center justify-between gap-2 mb-3 pb-2.5 border-b-2 border-dashed border-ink/25">
+                    <div class="flex items-center gap-1.5 flex-wrap">
+                        <button onclick="setDayFilter('all')" id="filter-all" class="hand-drawn-btn px-3 py-1.5 text-xs sm:text-sm font-bold bg-ink text-washi">
+                            全部自駕路線
+                        </button>
+                        <button onclick="setDayFilter(1)" id="filter-1" class="hand-drawn-btn px-3 py-1.5 text-xs sm:text-sm font-bold bg-day1Light text-day1">
+                            ● Day 1 (12/5 週六)
+                        </button>
+                        <button onclick="setDayFilter(2)" id="filter-2" class="hand-drawn-btn px-3 py-1.5 text-xs sm:text-sm font-bold bg-day2Light text-day2">
+                            ● Day 2 (12/6 週日)
+                        </button>
+                    </div>
+                    <span class="text-xs font-bold text-inkLight bg-washiDark px-2.5 py-1 rounded-lg border border-ink/30">
+                        👆 點擊地圖插畫查看詳情
+                    </span>
+                </div>
+
+                <!-- 手繪插畫風格 SVG 地圖畫布 -->
+                <div class="relative w-full aspect-[4/3] sm:aspect-[16/11] bg-[#F4EFE4] rounded-xl border-2 border-ink overflow-hidden select-none">
+                    <svg id="trip-map-svg" viewBox="0 0 800 580" class="w-full h-full">
+                        <defs>
+                            <!-- 水彩暈染濾鏡 -->
+                            <filter id="watercolor" x="-10%" y="-10%" width="120%" height="120%">
+                                <feTurbulence type="fractalNoise" baseFrequency="0.03" numOctaves="3" result="noise"/>
+                                <feDisplacementMap in="SourceGraphic" in2="noise" scale="4" xChannelSelector="R" yChannelSelector="G"/>
+                            </filter>
+                            <!-- 站點陰影 -->
+                            <filter id="dropShadow" x="-20%" y="-20%" width="140%" height="140%">
+                                <feDropShadow dx="2" dy="3" stdDeviation="2" flood-color="#4A3B32" flood-opacity="0.25"/>
+                            </filter>
+                            <!-- 路線箭頭標記 -->
+                            <marker id="arrow-day1" viewBox="0 0 10 10" refX="6" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+                                <path d="M 0 1 L 10 5 L 0 9 z" fill="#D96B43"/>
+                            </marker>
+                            <marker id="arrow-day2" viewBox="0 0 10 10" refX="6" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+                                <path d="M 0 1 L 10 5 L 0 9 z" fill="#3B6E8C"/>
+                            </marker>
+                        </defs>
+
+                        <!-- 1. 背景海洋與海岸線 (左側為台灣海峽，右側為陸地山脈) -->
+                        <rect x="0" y="0" width="800" height="580" fill="#DDEBF0"/>
+                        
+                        <!-- 海浪手繪紋理 -->
+                        <g stroke="#9CC2D1" stroke-width="2" fill="none" stroke-linecap="round" opacity="0.75">
+                            <path d="M40 160 q15 -8 30 0 t30 0"/>
+                            <path d="M70 260 q15 -8 30 0 t30 0"/>
+                            <path d="M35 370 q15 -8 30 0 t30 0"/>
+                            <path d="M60 480 q15 -8 30 0 t30 0"/>
+                            <path d="M130 530 q15 -8 30 0 t30 0"/>
+                        </g>
+
+                        <!-- 手繪指南針裝飾 (左下角) -->
+                        <g transform="translate(65, 515)" opacity="0.85">
+                            <circle cx="0" cy="0" r="24" fill="#FAF6EE" stroke="#4A3B32" stroke-width="2"/>
+                            <path d="M0 -18 L4 0 L0 18 L-4 0 Z" fill="#D96B43" stroke="#4A3B32" stroke-width="1.2"/>
+                            <path d="M-18 0 L0 -4 L18 0 L0 4 Z" fill="#FFFDF9" stroke="#4A3B32" stroke-width="1.2"/>
+                            <text x="0" y="-27" text-anchor="middle" font-size="11" font-weight="900" fill="#4A3B32">N</text>
+                        </g>
+
+                        <!-- 2. 台灣西部陸地輪廓 (台中 -> 彰化 -> 雲嘉 -> 台南七股潟湖 -> 台南安平 -> 玉井山區) -->
+                        <path d="M 320 0 
+                                 L 800 0 
+                                 L 800 580 
+                                 L 260 580 
+                                 C 245 540, 215 505, 195 465
+                                 C 185 445, 210 435, 195 420
+                                 C 175 400, 155 375, 165 340
+                                 C 172 315, 195 305, 190 280
+                                 C 185 245, 225 180, 265 110
+                                 C 290 65, 310 30, 320 0 Z" 
+                              fill="#F7F1E1" stroke="#4A3B32" stroke-width="3" filter="url(#watercolor)"/>
+
+                        <!-- 區域分隔虛線 (台中 / 彰化 / 台南) -->
+                        <g stroke="#B8A99A" stroke-width="1.8" stroke-dasharray="6 6" fill="none">
+                            <!-- 台中與彰化界線 -->
+                            <path d="M 295 68 Q 450 85 680 65"/>
+                            <!-- 彰化與台南示意界線 (跨過雲嘉平原) -->
+                            <path d="M 218 220 Q 460 235 760 210"/>
+                        </g>
+
+                        <!-- 區域手繪水印文字 -->
+                        <text x="580" y="45" font-size="16" font-weight="900" fill="#A69688" letter-spacing="4">臺中 TAICHUNG</text>
+                        <text x="580" y="155" font-size="16" font-weight="900" fill="#A69688" letter-spacing="4">彰化 CHANGHUA</text>
+                        <text x="610" y="255" font-size="16" font-weight="900" fill="#A69688" letter-spacing="4">臺南 TAINAN</text>
+                        <text x="275" y="185" font-size="11" font-weight="700" fill="#9E8E80" font-style="italic">≈ 國道一號 / 三號 南下北返軸線 ≈</text>
+
+                        <!-- 3. 地形插畫裝飾：玉井中央山脈丘陵 (右側) -->
+                        <g transform="translate(620, 290)" opacity="0.9">
+                            <path d="M0 60 Q35 5 70 60" fill="#C9D8B6" stroke="#4A3B32" stroke-width="2"/>
+                            <path d="M45 60 Q85 -5 125 60" fill="#B5C99A" stroke="#4A3B32" stroke-width="2"/>
+                            <path d="M95 60 Q130 15 165 60" fill="#C9D8B6" stroke="#4A3B32" stroke-width="2"/>
+                            <!-- 小樹 -->
+                            <circle cx="30" cy="75" r="9" fill="#6B8E6E" stroke="#4A3B32" stroke-width="1.8"/>
+                            <line x1="30" y1="84" x2="30" y2="93" stroke="#4A3B32" stroke-width="2"/>
+                            <circle cx="135" cy="78" r="10" fill="#6B8E6E" stroke="#4A3B32" stroke-width="1.8"/>
+                            <line x1="135" y1="88" x2="135" y2="97" stroke="#4A3B32" stroke-width="2"/>
+                        </g>
+
+                        <!-- 七股鹽田格子裝飾 -->
+                        <g transform="translate(215, 315)" opacity="0.85">
+                            <rect x="0" y="0" width="24" height="16" rx="2" fill="#EBF4F6" stroke="#4A3B32" stroke-width="1.5"/>
+                            <rect x="28" y="0" width="24" height="16" rx="2" fill="#EBF4F6" stroke="#4A3B32" stroke-width="1.5"/>
+                            <rect x="10" y="20" width="24" height="16" rx="2" fill="#EBF4F6" stroke="#4A3B32" stroke-width="1.5"/>
+                            <path d="M48 28 L60 14 L72 28 Z" fill="#FFFDF9" stroke="#4A3B32" stroke-width="1.5"/>
+                        </g>
+
+                        <!-- ========================================== -->
+                        <!-- 4. 自駕路線路徑 (Day 1 橘紅 & Day 2 靛藍) -->
+                        <!-- ========================================== -->
+                        
+                        <!-- Day 1 路線群組 (台中高鐵 -> 玉井果菜市場 -> 隱田山房 -> 安平AP7民宿 <-> 海鮮島) -->
+                        <g id="svg-route-day1">
+                            <!-- 台中高鐵 -> 玉井果菜市場 -->
+                            <path d="M 385 52 C 420 130, 510 210, 520 315" 
+                                  fill="none" stroke="#D96B43" stroke-width="4.5" stroke-linecap="round" class="route-animated" marker-end="url(#arrow-day1)"/>
+                            <!-- 玉井果菜市場 -> 隱田山房 -->
+                            <path d="M 520 315 Q 575 345 615 385" 
+                                  fill="none" stroke="#D96B43" stroke-width="4.5" stroke-linecap="round" class="route-animated" marker-end="url(#arrow-day1)"/>
+                            <!-- 隱田山房 -> 台南安平AP7民宿 -->
+                            <path d="M 615 385 C 520 435, 370 450, 260 455" 
+                                  fill="none" stroke="#D96B43" stroke-width="4.5" stroke-linecap="round" class="route-animated" marker-end="url(#arrow-day1)"/>
+                            <!-- 台南安平AP7民宿 <-> 海鮮島水產活物台菜 (開車約10分鐘) -->
+                            <path d="M 260 455 Q 245 495 255 522" 
+                                  fill="none" stroke="#D96B43" stroke-width="3.5" stroke-dasharray="4 4" stroke-linecap="round"/>
+                            
+                            <!-- 車程時間小標籤 (Day 1) -->
+                            <g transform="translate(465, 195)">
+                                <rect x="-42" y="-11" width="84" height="22" rx="11" fill="#FCECE6" stroke="#D96B43" stroke-width="1.5"/>
+                                <text x="0" y="4" text-anchor="middle" font-size="10.5" font-weight="700" fill="#D96B43">🚗 車程約 2 hr</text>
+                            </g>
+                            <g transform="translate(445, 442)">
+                                <rect x="-48" y="-11" width="96" height="22" rx="11" fill="#FCECE6" stroke="#D96B43" stroke-width="1.5"/>
+                                <text x="0" y="4" text-anchor="middle" font-size="10.5" font-weight="700" fill="#D96B43">🚗 車程 1hr 10m</text>
+                            </g>
+                        </g>
+
+                        <!-- Day 2 路線群組 (安平民宿 -> 七股黑琵食堂 -> 社頭四季花園咖啡 -> 台中高鐵) -->
+                        <g id="svg-route-day2">
+                            <!-- 台南安平民宿 -> 七股黑琵食堂 -->
+                            <path d="M 260 455 C 235 420, 235 385, 255 355" 
+                                  fill="none" stroke="#3B6E8C" stroke-width="4.5" stroke-linecap="round" class="route-animated" marker-end="url(#arrow-day2)"/>
+                            <!-- 七股黑琵食堂 -> 四季花園咖啡 (彰化社頭) -->
+                            <path d="M 255 355 C 275 260, 320 195, 385 148" 
+                                  fill="none" stroke="#3B6E8C" stroke-width="4.5" stroke-linecap="round" class="route-animated" marker-end="url(#arrow-day2)"/>
+                            <!-- 四季花園咖啡 -> 台中高鐵站 -->
+                            <path d="M 385 148 Q 375 95 385 52" 
+                                  fill="none" stroke="#3B6E8C" stroke-width="4.5" stroke-linecap="round" class="route-animated" marker-end="url(#arrow-day2)"/>
+
+                            <!-- 車程時間小標籤 (Day 2) -->
+                            <g transform="translate(185, 405)">
+                                <rect x="-42" y="-11" width="84" height="22" rx="11" fill="#E6F0F5" stroke="#3B6E8C" stroke-width="1.5"/>
+                                <text x="0" y="4" text-anchor="middle" font-size="10.5" font-weight="700" fill="#3B6E8C">🚗 車程 30 m</text>
+                            </g>
+                            <g transform="translate(310, 248)">
+                                <rect x="-48" y="-11" width="96" height="22" rx="11" fill="#E6F0F5" stroke="#3B6E8C" stroke-width="1.5"/>
+                                <text x="0" y="4" text-anchor="middle" font-size="10.5" font-weight="700" fill="#3B6E8C">🚗 車程 1hr 40m</text>
+                            </g>
+                            <g transform="translate(320, 102)">
+                                <rect x="-42" y="-11" width="84" height="22" rx="11" fill="#E6F0F5" stroke="#3B6E8C" stroke-width="1.5"/>
+                                <text x="0" y="4" text-anchor="middle" font-size="10.5" font-weight="700" fill="#3B6E8C">🚗 車程 40 m</text>
+                            </g>
+                        </g>
+
+                        <!-- ========================================== -->
+                        <!-- 5. 互動式手繪地標節點 (7 個不重複地標)     -->
+                        <!-- ========================================== -->
+
+                        <!-- 地標 1: 台中高鐵站 (集合出發 & 返程解散) -->
+                        <g id="node-taichung" onclick="selectStop('taichung')" class="cursor-pointer group" transform="translate(385, 52)">
+                            <circle class="highlight-ring hidden node-pulse" cx="0" cy="0" r="30" fill="#E5B85C" opacity="0.5"/>
+                            <!-- 手繪自駕休旅車插畫 -->
+                            <g filter="url(#dropShadow)">
+                                <circle cx="0" cy="0" r="22" fill="#FFFDF9" stroke="#4A3B32" stroke-width="2.5"/>
+                                <!-- 車身 -->
+                                <path d="M-12 3 h24 v4 a2 2 0 0 1 -2 2 h-20 a2 2 0 0 1 -2 -2 z" fill="#D96B43" stroke="#4A3B32" stroke-width="1.5"/>
+                                <path d="M-9 3 l3 -7 h12 l3 7" fill="#E5B85C" stroke="#4A3B32" stroke-width="1.5"/>
+                                <circle cx="-7" cy="9" r="2.8" fill="#4A3B32"/>
+                                <circle cx="7" cy="9" r="2.8" fill="#4A3B32"/>
+                            </g>
+                            <!-- 地標文字牌 -->
+                            <g transform="translate(95, -4)">
+                                <rect x="-66" y="-16" width="132" height="32" rx="8" fill="#FFFDF9" stroke="#4A3B32" stroke-width="2"/>
+                                <text x="0" y="-1" text-anchor="middle" font-size="12" font-weight="900" fill="#4A3B32">台中高鐵站</text>
+                                <text x="0" y="11" text-anchor="middle" font-size="9.5" font-weight="700" fill="#D96B43">08:30 出發 / 19:00 解散</text>
+                            </g>
+                        </g>
+
+                        <!-- 地標 2: 玉井果菜市場 (Day 1) -->
+                        <g id="node-yujing-market" onclick="selectStop('yujing-market')" class="cursor-pointer group" transform="translate(520, 315)">
+                            <circle class="highlight-ring hidden node-pulse" cx="0" cy="0" r="30" fill="#D96B43" opacity="0.4"/>
+                            <g filter="url(#dropShadow)">
+                                <circle cx="0" cy="0" r="22" fill="#FCECE6" stroke="#D96B43" stroke-width="2.5"/>
+                                <!-- 手繪鳳梨與水果籃圖示 -->
+                                <ellipse cx="0" cy="4" rx="7" ry="9" fill="#E5B85C" stroke="#4A3B32" stroke-width="1.5"/>
+                                <path d="M-4 -4 L0 -12 L4 -4 M-6 -2 L-2 -10 M6 -2 L2 -10" stroke="#6B8E6E" stroke-width="2" fill="none" stroke-linecap="round"/>
+                                <path d="M-4 2 L4 6 M4 2 L-4 6" stroke="#4A3B32" stroke-width="1"/>
+                            </g>
+                            <g transform="translate(0, -36)">
+                                <rect x="-58" y="-14" width="116" height="28" rx="8" fill="#FFFDF9" stroke="#D96B43" stroke-width="2"/>
+                                <text x="0" y="-1" text-anchor="middle" font-size="11.5" font-weight="900" fill="#4A3B32">① 玉井果菜市場</text>
+                                <text x="0" y="10" text-anchor="middle" font-size="9.5" font-weight="700" fill="#D96B43">10:00 - 11:00</text>
+                            </g>
+                        </g>
+
+                        <!-- 地標 3: 隱田山房 (Day 1 午餐) -->
+                        <g id="node-yintian" onclick="selectStop('yintian')" class="cursor-pointer group" transform="translate(615, 385)">
+                            <circle class="highlight-ring hidden node-pulse" cx="0" cy="0" r="30" fill="#D96B43" opacity="0.4"/>
+                            <g filter="url(#dropShadow)">
+                                <circle cx="0" cy="0" r="22" fill="#FCECE6" stroke="#D96B43" stroke-width="2.5"/>
+                                <!-- 手繪日式木屋山房圖示 -->
+                                <path d="M-13 0 L0 -11 L13 0 Z" fill="#6B8E6E" stroke="#4A3B32" stroke-width="1.5" stroke-linejoin="round"/>
+                                <rect x="-9" y="0" width="18" height="11" fill="#FFFDF9" stroke="#4A3B32" stroke-width="1.5"/>
+                                <rect x="-3" y="4" width="6" height="7" fill="#D96B43" stroke="#4A3B32" stroke-width="1.2"/>
+                            </g>
+                            <g transform="translate(76, 12)">
+                                <rect x="-54" y="-15" width="108" height="30" rx="8" fill="#FFFDF9" stroke="#D96B43" stroke-width="2"/>
+                                <text x="0" y="-2" text-anchor="middle" font-size="11.5" font-weight="900" fill="#4A3B32">② 隱田山房</text>
+                                <text x="0" y="10" text-anchor="middle" font-size="9.5" font-weight="700" fill="#D96B43">12:00 午餐</text>
+                            </g>
+                        </g>
+
+                        <!-- 地標 4: 台南安平AP7民宿 (Day 1 入住 / Day 2 退房) -->
+                        <g id="node-anping-bnb" onclick="selectStop('anping-bnb')" class="cursor-pointer group" transform="translate(260, 455)">
+                            <circle class="highlight-ring hidden node-pulse" cx="0" cy="0" r="30" fill="#E5B85C" opacity="0.5"/>
+                            <g filter="url(#dropShadow)">
+                                <circle cx="0" cy="0" r="22" fill="#FFFDF9" stroke="#4A3B32" stroke-width="2.5"/>
+                                <!-- 手繪溫馨民宿小屋 -->
+                                <path d="M-12 -1 L0 -11 L12 -1 Z" fill="#D96B43" stroke="#4A3B32" stroke-width="1.5"/>
+                                <rect x="-9" y="-1" width="18" height="12" fill="#E5B85C" stroke="#4A3B32" stroke-width="1.5"/>
+                                <circle cx="0" cy="4" r="2.5" fill="#FFFDF9" stroke="#4A3B32" stroke-width="1.2"/>
+                            </g>
+                            <g transform="translate(82, -6)">
+                                <rect x="-60" y="-16" width="120" height="32" rx="8" fill="#FFFDF9" stroke="#4A3B32" stroke-width="2"/>
+                                <text x="0" y="-2" text-anchor="middle" font-size="11.5" font-weight="900" fill="#4A3B32">③ 安平AP7民宿</text>
+                                <text x="0" y="10" text-anchor="middle" font-size="9" font-weight="700" fill="#7A685D">15:00 入住 / 10:30 退房</text>
+                            </g>
+                        </g>
+
+                        <!-- 地標 5: 海鮮島水產活物台菜 (Day 1 晚餐) -->
+                        <g id="node-haizhiwei" onclick="selectStop('haizhiwei')" class="cursor-pointer group" transform="translate(255, 522)">
+                            <circle class="highlight-ring hidden node-pulse" cx="0" cy="0" r="30" fill="#D96B43" opacity="0.4"/>
+                            <g filter="url(#dropShadow)">
+                                <circle cx="0" cy="0" r="21" fill="#FCECE6" stroke="#D96B43" stroke-width="2.5"/>
+                                <!-- 手繪海鮮鮮魚大餐圖示 -->
+                                <path d="M-11 0 Q0 -9 10 0 Q0 9 -11 0 Z" fill="#E5B85C" stroke="#4A3B32" stroke-width="1.5"/>
+                                <path d="M10 0 L14 -5 L14 5 Z" fill="#D96B43" stroke="#4A3B32" stroke-width="1.3"/>
+                                <circle cx="-5" cy="-1.5" r="1.5" fill="#4A3B32"/>
+                            </g>
+                            <g transform="translate(86, 6)">
+                                <rect x="-64" y="-14" width="128" height="28" rx="8" fill="#FFFDF9" stroke="#D96B43" stroke-width="2"/>
+                                <text x="0" y="-1" text-anchor="middle" font-size="11" font-weight="900" fill="#4A3B32">④ 海鮮島水產活物台菜</text>
+                                <text x="0" y="10" text-anchor="middle" font-size="9.5" font-weight="700" fill="#D96B43">19:00 活物海鮮晚餐</text>
+                            </g>
+                        </g>
+
+                        <!-- 地標 6: 台南七股黑琵食堂 (Day 2 午餐) -->
+                        <g id="node-heipi" onclick="selectStop('heipi')" class="cursor-pointer group" transform="translate(255, 355)">
+                            <circle class="highlight-ring hidden node-pulse" cx="0" cy="0" r="30" fill="#3B6E8C" opacity="0.4"/>
+                            <g filter="url(#dropShadow)">
+                                <circle cx="0" cy="0" r="22" fill="#E6F0F5" stroke="#3B6E8C" stroke-width="2.5"/>
+                                <!-- 手繪黑面琵鷺圖示 -->
+                                <path d="M-4 8 Q-6 -2 0 -6 Q4 -8 4 -3 Q2 2 5 8 Z" fill="#FFFDF9" stroke="#4A3B32" stroke-width="1.5"/>
+                                <path d="M3 -6 L12 -4 L12 -2 L3 -4 Z" fill="#4A3B32"/>
+                                <line x1="-1" y1="8" x2="-1" y2="13" stroke="#4A3B32" stroke-width="1.5"/>
+                                <line x1="3" y1="8" x2="3" y2="13" stroke="#4A3B32" stroke-width="1.5"/>
+                            </g>
+                            <g transform="translate(82, -4)">
+                                <rect x="-60" y="-15" width="120" height="30" rx="8" fill="#FFFDF9" stroke="#3B6E8C" stroke-width="2"/>
+                                <text x="0" y="-2" text-anchor="middle" font-size="11.5" font-weight="900" fill="#4A3B32">⑤ 七股黑琵食堂</text>
+                                <text x="0" y="10" text-anchor="middle" font-size="9.5" font-weight="700" fill="#3B6E8C">Day2 11:00 午餐</text>
+                            </g>
+                        </g>
+
+                        <!-- 地標 7: 四季花園咖啡 (Day 2 彰化社頭下午茶 - 僅出現一次！) -->
+                        <g id="node-siji-cafe" onclick="selectStop('siji-cafe')" class="cursor-pointer group" transform="translate(385, 148)">
+                            <circle class="highlight-ring hidden node-pulse" cx="0" cy="0" r="30" fill="#3B6E8C" opacity="0.4"/>
+                            <g filter="url(#dropShadow)">
+                                <circle cx="0" cy="0" r="22" fill="#E6F0F5" stroke="#3B6E8C" stroke-width="2.5"/>
+                                <!-- 手繪咖啡杯與小花圖示 -->
+                                <path d="M-7 -2 h12 v7 a5 5 0 0 1 -5 5 h-2 a5 5 0 0 1 -5 -5 z" fill="#FFFDF9" stroke="#4A3B32" stroke-width="1.5"/>
+                                <path d="M5 0 h3 a2.5 2.5 0 0 1 0 5 h-3" fill="none" stroke="#4A3B32" stroke-width="1.5"/>
+                                <path d="M-3 -8 q1.5 -3 0 -5 M2 -8 q1.5 -3 0 -5" stroke="#D96B43" stroke-width="1.5" fill="none" stroke-linecap="round"/>
+                            </g>
+                            <g transform="translate(88, 0)">
+                                <rect x="-66" y="-16" width="132" height="32" rx="8" fill="#FFFDF9" stroke="#3B6E8C" stroke-width="2"/>
+                                <text x="0" y="-2" text-anchor="middle" font-size="11.5" font-weight="900" fill="#4A3B32">⑥ 社頭四季花園咖啡</text>
+                                <text x="0" y="10" text-anchor="middle" font-size="9.5" font-weight="700" fill="#3B6E8C">Day2 15:30 下午茶</text>
+                            </g>
+                        </g>
+
+                    </svg>
+
+                    <!-- 左下角圖例說明 -->
+                    <div class="absolute bottom-2.5 right-2.5 bg-washi/95 backdrop-blur-xs px-3 py-2 rounded-xl border-2 border-ink text-xs font-bold shadow-sm space-y-1">
+                        <div class="flex items-center gap-2">
+                            <span class="w-4 h-1.5 bg-day1 rounded-full inline-block"></span>
+                            <span class="text-ink">Day 1 (12/5) 自駕南下</span>
+                        </div>
+                        <div class="flex items-center gap-2">
+                            <span class="w-4 h-1.5 bg-day2 rounded-full inline-block"></span>
+                            <span class="text-ink">Day 2 (12/6) 北返巡禮</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 地圖下方：當前選中站點詳細資訊卡 -->
+                <div id="selected-stop-card" class="mt-3 bg-washiDark/75 rounded-xl border-2 border-ink p-3.5 sm:p-4 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
+                    <!-- 動態由 JS 渲染 -->
+                </div>
+            </div>
+        </section>
+
+        <!-- 右欄：桌面版整合「行程表」與「5人分帳」切換分頁 (佔 5 欄) -->
+        <section class="lg:col-span-5 flex flex-col gap-4">
+            
+            <!-- 桌面版右側功能切換頁籤 -->
+            <div class="hidden lg:grid grid-cols-2 gap-2.5 bg-washiDark p-2 rounded-2xl border-2 border-ink">
+                <button onclick="switchDesktopRightTab('itinerary')" id="dtab-itinerary" class="hand-drawn-btn py-2 px-3 text-sm font-black bg-mustard text-ink flex items-center justify-center gap-1.5">
+                    <span>🗓️</span> 兩天一夜完整行程表
+                </button>
+                <button onclick="switchDesktopRightTab('split')" id="dtab-split" class="hand-drawn-btn py-2 px-3 text-sm font-black bg-white text-ink flex items-center justify-center gap-1.5">
+                    <span>🧮</span> 5位大叔公費分帳機
+                </button>
+            </div>
+
+            <!-- 面板 A：完整行程時間軸清單 -->
+            <div id="panel-itinerary" class="hand-drawn-box bg-[#FFFDF9] p-4 space-y-4">
+                <div class="flex items-center justify-between border-b-2 border-dashed border-ink/25 pb-2">
+                    <h2 class="text-lg font-serif font-black text-ink flex items-center gap-2">
+                        <span>📌</span> 行程時間軸（點擊可連動地圖）
+                    </h2>
+                    <span class="text-xs font-bold text-inkLight">全程自駕不趕路</span>
+                </div>
+
+                <!-- Day 1 清單 -->
+                <div>
+                    <div class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-day1 text-white text-xs font-black mb-2.5 border border-ink">
+                        <span>DAY 1</span> <span>12/5 (週六) 山城水果與安平海鮮</span>
+                    </div>
+                    <div id="itinerary-list-day1" class="space-y-2.5 border-l-3 border-day1 pl-3 ml-2">
+                        <!-- JS 動態生成 -->
+                    </div>
+                </div>
+
+                <!-- Day 2 清單 -->
+                <div class="pt-2">
+                    <div class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-day2 text-white text-xs font-black mb-2.5 border border-ink">
+                        <span>DAY 2</span> <span>12/6 (週日) 七股鮮味與社頭咖啡</span>
+                    </div>
+                    <div id="itinerary-list-day2" class="space-y-2.5 border-l-3 border-day2 pl-3 ml-2">
+                        <!-- JS 動態生成 -->
+                    </div>
+                </div>
+            </div>
+
+            <!-- 面板 B：5人畢業旅行分帳計算機 -->
+            <div id="panel-split" class="hidden lg:hidden hand-drawn-box bg-[#FFFDF9] p-4 space-y-4">
+                <div class="flex items-center justify-between border-b-2 border-dashed border-ink/25 pb-2">
+                    <h2 class="text-lg font-serif font-black text-ink flex items-center gap-2">
+                        <span>💰</span> 5人分帳與自動結算
+                    </h2>
+                    <button onclick="resetDemoExpenses()" class="text-xs font-bold px-2.5 py-1 rounded-lg bg-washiDark hover:bg-mustard/50 text-ink border border-ink transition">
+                        ↻ 重置範例資料
+                    </button>
+                </div>
+
+                <!-- 1. 5位同學名稱編輯區 -->
+                <div class="bg-washiDark/70 p-3 rounded-xl border border-ink/40">
+                    <div class="flex items-center justify-between mb-2">
+                        <span class="text-xs font-black text-ink">👥 5位老同學名單（可直接點擊修改綽號）</span>
+                    </div>
+                    <div id="members-editor" class="grid grid-cols-2 sm:grid-cols-3 gap-2">
+                        <!-- JS 動態渲染輸入框 -->
+                    </div>
+                </div>
+
+                <!-- 2. 新增支出表單 -->
+                <form id="expense-form" onsubmit="addExpense(event)" class="bg-washi p-3.5 rounded-xl border-2 border-ink space-y-3">
+                    <div class="text-xs font-black text-ink flex items-center justify-between">
+                        <span>➕ 新增一筆旅行支出</span>
+                        <span class="text-inkLight font-normal">自動儲存於瀏覽器</span>
+                    </div>
+                    
+                    <div class="grid grid-cols-1 sm:grid-cols-3 gap-2">
+                        <div class="sm:col-span-2">
+                            <label class="block text-xs font-bold text-inkLight mb-1">消費項目</label>
+                            <input type="text" id="exp-title" required placeholder="例如：安平老街伴手禮、油錢" 
+                                   class="w-full px-3 py-1.5 text-sm bg-white border-2 border-ink rounded-lg focus:outline-none focus:ring-2 focus:ring-mustard">
+                        </div>
+                        <div>
+                            <label class="block text-xs font-bold text-inkLight mb-1">金額 (TWD)</label>
+                            <input type="number" id="exp-amount" required min="1" step="1" placeholder="1500" 
+                                   class="w-full px-3 py-1.5 text-sm bg-white border-2 border-ink rounded-lg focus:outline-none focus:ring-2 focus:ring-mustard">
+                        </div>
+                    </div>
+
+                    <!-- 快速點選消費項目標籤 -->
+                    <div class="flex flex-wrap gap-1.5">
+                        <button type="button" onclick="document.getElementById('exp-title').value='油資/過路費'" class="text-[11px] font-bold px-2 py-0.5 rounded-full bg-washiDark hover:bg-mustard/60 text-ink border border-ink/40 transition">+ 油資/過路費</button>
+                        <button type="button" onclick="document.getElementById('exp-title').value='隱田山房午餐'" class="text-[11px] font-bold px-2 py-0.5 rounded-full bg-washiDark hover:bg-mustard/60 text-ink border border-ink/40 transition">+ 隱田山房午餐</button>
+                        <button type="button" onclick="document.getElementById('exp-title').value='AP7民宿住宿費'" class="text-[11px] font-bold px-2 py-0.5 rounded-full bg-washiDark hover:bg-mustard/60 text-ink border border-ink/40 transition">+ AP7民宿住宿費</button>
+                        <button type="button" onclick="document.getElementById('exp-title').value='海鮮島晚餐'" class="text-[11px] font-bold px-2 py-0.5 rounded-full bg-washiDark hover:bg-mustard/60 text-ink border border-ink/40 transition">+ 海鮮島晚餐</button>
+                        <button type="button" onclick="document.getElementById('exp-title').value='黑琵食堂午餐'" class="text-[11px] font-bold px-2 py-0.5 rounded-full bg-washiDark hover:bg-mustard/60 text-ink border border-ink/40 transition">+ 黑琵食堂午餐</button>
+                        <button type="button" onclick="document.getElementById('exp-title').value='四季花園下午茶'" class="text-[11px] font-bold px-2 py-0.5 rounded-full bg-washiDark hover:bg-mustard/60 text-ink border border-ink/40 transition">+ 四季花園下午茶</button>
+                    </div>
+
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-2 items-end">
+                        <div>
+                            <label class="block text-xs font-bold text-inkLight mb-1">誰先墊付？</label>
+                            <select id="exp-payer" class="w-full px-3 py-1.5 text-sm font-bold bg-white border-2 border-ink rounded-lg focus:outline-none focus:ring-2 focus:ring-mustard">
+                                <!-- JS 動態填入成員 -->
+                            </select>
+                        </div>
+                        <div>
+                            <button type="submit" class="w-full hand-drawn-btn py-1.5 px-4 bg-matcha text-white font-black text-sm hover:brightness-105">
+                                + 加入帳本
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- 分攤對象勾選 -->
+                    <div>
+                        <div class="flex items-center justify-between mb-1">
+                            <label class="text-xs font-bold text-inkLight">分攤成員（預設5人全體均分）</label>
+                            <button type="button" onclick="selectAllSplitMembers()" class="text-xs font-bold text-day2 underline">全選5人</button>
+                        </div>
+                        <div id="split-members-checkboxes" class="flex flex-wrap gap-1.5">
+                            <!-- JS 動態生成 -->
+                        </div>
+                    </div>
+                </form>
+
+                <!-- 3. 總支出與最簡結算建議 -->
+                <div class="bg-day1Light/60 p-3.5 rounded-xl border-2 border-day1 space-y-2.5">
+                    <div class="flex items-center justify-between">
+                        <span class="text-sm font-black text-ink">📊 結算建議（多退少補）</span>
+                        <span id="total-trip-cost" class="text-sm font-black text-day1 bg-white px-2.5 py-0.5 rounded-full border border-day1">
+                            總花費：$0
+                        </span>
+                    </div>
+
+                    <!-- 個人收支概況 -->
+                    <div id="member-balances-list" class="grid grid-cols-2 sm:grid-cols-3 gap-1.5 text-xs">
+                        <!-- JS 動態生成 -->
+                    </div>
+
+                    <!-- 轉帳路徑建議 -->
+                    <div class="bg-white p-2.5 rounded-lg border border-ink/40 space-y-1.5">
+                        <div class="text-xs font-black text-inkLight">💸 最簡轉帳方式：</div>
+                        <div id="settlement-transactions" class="space-y-1 text-sm font-bold text-ink">
+                            <!-- JS 動態生成 -->
+                        </div>
+                    </div>
+
+                    <!-- 一鍵複製按鈕 -->
+                    <button onclick="copySettlementToClipboard()" class="w-full hand-drawn-btn py-2 px-3 bg-mustard text-ink font-black text-xs sm:text-sm flex items-center justify-center gap-1.5">
+                        <span>📋</span> 一鍵複製結算明細（貼到 LINE 群組）
+                    </button>
+                </div>
+
+                <!-- 4. 已記錄支出明細列表 -->
+                <div class="space-y-2">
+                    <div class="flex items-center justify-between">
+                        <span class="text-xs font-black text-ink">🧾 支出明細紀錄 (<span id="expense-count">0</span> 筆)</span>
+                    </div>
+                    <div id="expense-list" class="space-y-2 max-h-64 overflow-y-auto pr-1">
+                        <!-- JS 動態生成 -->
+                    </div>
+                </div>
+            </div>
+
+        </section>
+    </main>
+
+    <!-- 自訂通知提示框 (取代 alert) -->
+    <div id="toast-message" class="fixed bottom-5 left-1/2 -translate-x-1/2 z-50 hidden bg-ink text-washi px-5 py-2.5 rounded-full border-2 border-mustard shadow-lg text-sm font-bold flex items-center gap-2 transition-all">
+        <span id="toast-icon">✅</span>
+        <span id="toast-text">已複製到剪貼簿！</span>
+    </div>
+
+    <script>
+        // ==========================================
+        // 1. 旅遊行程資料庫 (精準對應自駕順序)
+        // ==========================================
+        const stopsData = {
+            'taichung': {
+                id: 'taichung',
+                nodeId: 'node-taichung',
+                day: 'Day 1 起點 & Day 2 終點',
+                badgeColor: 'bg-ink text-washi',
+                title: '台中高鐵站（集合出發 / 返程解散）',
+                time: '12/5 08:00 集合・08:30 自駕出發 ｜ 12/6 19:00 抵達解散',
+                address: '台中市烏日區站區二路8號（高鐵台中站）',
+                driveNote: '全程自行開車，從台中高鐵接國道南下前往台南玉井（約 2 小時）',
+                desc: '5位44歲五專老同學準時集合！確認行李上車、分配駕駛與副駕零食補給，正式開啟畢業旅行。',
+                mapQuery: '高鐵台中站'
+            },
+            'yujing-market': {
+                id: 'yujing-market',
+                nodeId: 'node-yujing-market',
+                day: 'Day 1・第 1 站',
+                badgeColor: 'bg-day1 text-white',
+                title: '玉井果菜市場',
+                time: '12/5 10:00 - 11:00（停留約 1 小時）',
+                address: '台南市玉井區中正路27號',
+                driveNote: '下一站前往「隱田山房」車程約 15 分鐘',
+                desc: '南台灣最具代表性的水果集散地！大叔們可以逛逛當季鮮果、採買正宗玉井芒果乾與伴手禮。',
+                mapQuery: '玉井青果集貨場'
+            },
+            'yintian': {
+                id: 'yintian',
+                nodeId: 'node-yintian',
+                day: 'Day 1・第 2 站（午餐）',
+                badgeColor: 'bg-day1 text-white',
+                title: '隱田山房（午餐）',
+                time: '12/5 12:00 - 13:30（用餐 1.5 小時）',
+                address: '714臺南市玉井區層林里10號',
+                driveNote: '餐後前往「台南安平AP7民宿」車程約 1 小時 10 分鐘',
+                desc: '隱身玉井山林間的白色教堂與日式禪風餐廳，環境清幽雅致，適合老同學邊享用精緻火鍋與定食、邊敘舊聊天。',
+                mapQuery: '714臺南市玉井區層林里10號'
+            },
+            'anping-bnb': {
+                id: 'anping-bnb',
+                nodeId: 'node-anping-bnb',
+                day: 'Day 1 住宿 & Day 2 出發',
+                badgeColor: 'bg-mustard text-ink',
+                title: '台南安平AP7民宿（Check-in / 休息 / Check-out）',
+                time: '12/5 15:00 入住・21:00 休息 ｜ 12/6 10:30 退房',
+                address: '708臺南市安平區州平二街2之3號',
+                driveNote: '安平包棟民宿（民宿對面有停車空間），19:00 晚餐開車約 10 分鐘抵達海鮮島',
+                desc: '下午先到安平AP7包棟民宿放行李、稍作休息，晚上 19:00 一起去大啖活物海鮮，回民宿後5位大叔繼續暢聊五專往事。',
+                mapQuery: '708臺南市安平區州平二街2之3號'
+            },
+            'haizhiwei': {
+                id: 'haizhiwei',
+                nodeId: 'node-haizhiwei',
+                day: 'Day 1・晚餐聚會',
+                badgeColor: 'bg-day1 text-white',
+                title: '海鮮島水產活物台菜（晚餐）',
+                time: '12/5 19:00 - 21:00（從民宿開車約 10 分鐘）',
+                address: '708臺南市安平區平通路578號',
+                driveNote: '餐後返回台南安平AP7民宿休息（車程約 10 分鐘）',
+                desc: '安平超人氣活物水產與台菜料理！現撈海產新鮮澎湃，5個大男人點滿一桌道地辦桌手路菜最對味。',
+                mapQuery: '708臺南市安平區平通路578號'
+            },
+            'heipi': {
+                id: 'heipi',
+                nodeId: 'node-heipi',
+                day: 'Day 2・第 1 站（午餐）',
+                badgeColor: 'bg-day2 text-white',
+                title: '台南七股黑琵食堂（午餐）',
+                time: '12/6 11:00 - 13:00（10:30 安平退房，車程約 30 分鐘）',
+                address: '台南市七股區十份里海埔17之18號',
+                driveNote: '餐後一路北返，前往「彰化社頭四季花園咖啡」車程約 1 小時 40 分鐘',
+                desc: '沿著西濱前往七股生態濕地旁，品嚐鮮甜虱目魚、蚵仔料理與在地海味，順道感受七股鹽田潟湖風光。',
+                mapQuery: '台南市七股區十份里海埔17之18號'
+            },
+            'siji-cafe': {
+                id: 'siji-cafe',
+                nodeId: 'node-siji-cafe',
+                day: 'Day 2・第 2 站（下午茶）',
+                badgeColor: 'bg-day2 text-white',
+                title: '四季花園咖啡（北返下午茶）',
+                time: '12/6 15:30 - 18:00（停留 2.5 小時）',
+                address: '511彰化縣社頭鄉廣興村育英街69號',
+                driveNote: '18:00 離開，返回「台中高鐵站」車程約 40 分鐘（19:00 抵達）',
+                desc: '北返途中的綠意花園秘境！讓駕駛好好休息放鬆，5位同學喝杯手沖咖啡與下午茶，為畢業旅行畫下完美句點。',
+                mapQuery: '511彰化縣社頭鄉廣興村育英街69號'
+            }
+        };
+
+        // 行程時間軸陣列 (按時間順序排列)
+        const timelineItems = [
+            { day: 1, stopId: 'taichung', time: '08:00 - 08:30', title: '台中高鐵站集合・自駕出發', sub: '🚗 車程約 2 小時南下玉井' },
+            { day: 1, stopId: 'yujing-market', time: '10:00 - 11:00', title: '玉井果菜市場', sub: '🍍 採買水果、芒果乾伴手禮（車程 15 分）' },
+            { day: 1, stopId: 'yintian', time: '12:00 - 13:30', title: '隱田山房（午餐）', sub: '🏡 玉井區層林里10號（車程 1 hr 10 m）' },
+            { day: 1, stopId: 'anping-bnb', time: '15:00', title: '台南安平AP7民宿 Check-in', sub: '🧳 安平區州平二街2之3號（對面可停車）' },
+            { day: 1, stopId: 'haizhiwei', time: '19:00 - 21:00', title: '海鮮島水產活物台菜（晚餐）', sub: '🦞 安平區平通路578號（距民宿車程約10分）' },
+            { day: 1, stopId: 'anping-bnb', time: '21:00 -', title: '返回台南安平AP7民宿休息', sub: '🍻 包棟民宿夜聊敘舊、小酌歡唱' },
+            { day: 2, stopId: 'anping-bnb', time: '10:30', title: '台南安平AP7民宿 Check-out', sub: '🚗 退房出發北上七股（車程約 30 分）' },
+            { day: 2, stopId: 'heipi', time: '11:00 - 13:00', title: '台南七股黑琵食堂（午餐）', sub: '🦩 七股區十份里海埔17之18號（北返車程 1 hr 40 m）' },
+            { day: 2, stopId: 'siji-cafe', time: '15:30 - 18:00', title: '四季花園咖啡（下午茶）', sub: '☕ 彰化社頭鄉育英街69號（車程 40 分）' },
+            { day: 2, stopId: 'taichung', time: '19:00', title: '抵達台中高鐵站・解散返家', sub: '👋 平安抵達，期待下次再聚！' }
+        ];
+
+        let currentSelectedStopId = 'yujing-market';
+        let currentDayFilter = 'all';
+        let desktopRightTab = 'itinerary'; // 'itinerary' or 'split'
+        let mobileTab = 'map'; // 'map', 'itinerary', 'split'
+
+        // ==========================================
+        // 2. 地圖互動與行程渲染邏輯
+        // ==========================================
+        function selectStop(stopId) {
+            currentSelectedStopId = stopId;
+            const stop = stopsData[stopId];
+            if (!stop) return;
+
+            // 更新 SVG 地標脈衝高光圈
+            document.querySelectorAll('.highlight-ring').forEach(el => el.classList.add('hidden'));
+            const activeNode = document.getElementById(stop.nodeId);
+            if (activeNode) {
+                const ring = activeNode.querySelector('.highlight-ring');
+                if (ring) ring.classList.remove('hidden');
+            }
+
+            // 更新地圖下方詳細卡片
+            const cardEl = document.getElementById('selected-stop-card');
+            const googleMapsUrl = `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(stop.mapQuery)}`;
+
+            cardEl.innerHTML = `
+                <div class="space-y-1 flex-1">
+                    <div class="flex items-center gap-2 flex-wrap">
+                        <span class="text-xs font-black px-2.5 py-0.5 rounded-full border border-ink ${stop.badgeColor}">${stop.day}</span>
+                        <span class="text-xs font-bold text-inkLight">${stop.time}</span>
+                    </div>
+                    <h3 class="text-base sm:text-lg font-serif font-black text-ink">${stop.title}</h3>
+                    <p class="text-xs sm:text-sm text-ink/90 leading-relaxed">${stop.desc}</p>
+                    <div class="text-xs font-bold text-inkLight pt-1 flex flex-col sm:flex-row sm:items-center gap-1 sm:gap-3">
+                        <span>📍 ${stop.address}</span>
+                    </div>
+                    <div class="text-xs font-bold text-day2">
+                        💡 ${stop.driveNote}
+                    </div>
+                </div>
+                <div class="shrink-0 w-full sm:w-auto">
+                    <a href="${googleMapsUrl}" target="_blank" rel="noopener noreferrer" 
+                       class="hand-drawn-btn w-full sm:w-auto px-4 py-2.5 bg-matcha text-white text-xs sm:text-sm font-black flex items-center justify-center gap-1.5 hover:brightness-105">
+                        <span>🧭</span> 開啟 Google 導航
+                    </a>
+                </div>
+            `;
+
+            // 更新右側行程清單的高光狀態
+            document.querySelectorAll('.timeline-card').forEach(card => {
+                if (card.dataset.stopId === stopId) {
+                    card.classList.add('bg-mustard/35', 'ring-2', 'ring-ink');
+                    card.classList.remove('bg-white');
+                } else {
+                    card.classList.remove('bg-mustard/35', 'ring-2', 'ring-ink');
+                    card.classList.add('bg-white');
+                }
+            });
+        }
+
+        function setDayFilter(day) {
+            currentDayFilter = day;
+            const route1 = document.getElementById('svg-route-day1');
+            const route2 = document.getElementById('svg-route-day2');
+
+            // 按鈕樣式切換
+            const btnAll = document.getElementById('filter-all');
+            const btn1 = document.getElementById('filter-1');
+            const btn2 = document.getElementById('filter-2');
+
+            btnAll.className = `hand-drawn-btn px-3 py-1.5 text-xs sm:text-sm font-bold ${day === 'all' ? 'bg-ink text-washi' : 'bg-white text-ink'}`;
+            btn1.className = `hand-drawn-btn px-3 py-1.5 text-xs sm:text-sm font-bold ${day === 1 ? 'bg-day1 text-white' : 'bg-day1Light text-day1'}`;
+            btn2.className = `hand-drawn-btn px-3 py-1.5 text-xs sm:text-sm font-bold ${day === 2 ? 'bg-day2 text-white' : 'bg-day2Light text-day2'}`;
+
+            // 地圖路線透明度與顯示切換
+            if (day === 'all') {
+                route1.style.opacity = '1';
+                route2.style.opacity = '1';
+            } else if (day === 1) {
+                route1.style.opacity = '1';
+                route2.style.opacity = '0.18';
+                selectStop('yujing-market');
+            } else if (day === 2) {
+                route1.style.opacity = '0.18';
+                route2.style.opacity = '1';
+                selectStop('heipi');
+            }
+        }
+
+        function renderTimeline() {
+            const list1 = document.getElementById('itinerary-list-day1');
+            const list2 = document.getElementById('itinerary-list-day2');
+            list1.innerHTML = '';
+            list2.innerHTML = '';
+
+            timelineItems.forEach(item => {
+                const isDay1 = item.day === 1;
+                const dotColor = isDay1 ? 'bg-day1' : 'bg-day2';
+                const timeColor = isDay1 ? 'text-day1' : 'text-day2';
+
+                const cardHtml = `
+                    <div data-stop-id="${item.stopId}" onclick="handleTimelineClick('${item.stopId}', ${item.day})" 
+                         class="timeline-card hand-drawn-card bg-white p-2.5 cursor-pointer relative">
+                        <span class="w-3 h-3 rounded-full ${dotColor} border-2 border-ink absolute -left-[20px] top-3.5"></span>
+                        <div class="flex items-center justify-between gap-2">
+                            <span class="text-xs font-black ${timeColor}">${item.time}</span>
+                            <span class="text-[11px] font-bold text-inkLight">點擊看地圖 ➔</span>
+                        </div>
+                        <div class="text-sm font-black text-ink mt-0.5">${item.title}</div>
+                        <div class="text-xs text-inkLight mt-0.5">${item.sub}</div>
+                    </div>
+                `;
+
+                if (isDay1) {
+                    list1.innerHTML += cardHtml;
+                } else {
+                    list2.innerHTML += cardHtml;
+                }
+            });
+        }
+
+        function handleTimelineClick(stopId, day) {
+            selectStop(stopId);
+            // 若在手機版，自動切回地圖檢視讓使用者看到位置
+            if (window.innerWidth < 1024) {
+                switchMobileTab('map');
+            }
+        }
+
+        // ==========================================
+        // 3. 響應式分頁切換邏輯 (桌面雙欄 vs 手機三頁)
+        // ==========================================
+        function switchDesktopRightTab(tab) {
+            desktopRightTab = tab;
+            const panelItin = document.getElementById('panel-itinerary');
+            const panelSplit = document.getElementById('panel-split');
+            const btnItin = document.getElementById('dtab-itinerary');
+            const btnSplit = document.getElementById('dtab-split');
+
+            if (tab === 'itinerary') {
+                panelItin.classList.remove('hidden');
+                panelSplit.classList.add('hidden', 'lg:hidden');
+                btnItin.classList.replace('bg-white', 'bg-mustard');
+                btnSplit.classList.replace('bg-mustard', 'bg-white');
+            } else {
+                panelItin.classList.add('hidden');
+                panelSplit.classList.remove('hidden', 'lg:hidden');
+                btnSplit.classList.replace('bg-white', 'bg-mustard');
+                btnItin.classList.replace('bg-mustard', 'bg-white');
+            }
+        }
+
+        function switchMobileTab(tab) {
+            mobileTab = tab;
+            const panelMap = document.getElementById('panel-map');
+            const panelItin = document.getElementById('panel-itinerary');
+            const panelSplit = document.getElementById('panel-split');
+
+            const btns = {
+                map: document.getElementById('tab-btn-map'),
+                itinerary: document.getElementById('tab-btn-itinerary'),
+                split: document.getElementById('tab-btn-split')
+            };
+
+            Object.keys(btns).forEach(k => {
+                if (k === tab) {
+                    btns[k].classList.replace('bg-white', 'bg-mustard');
+                } else {
+                    btns[k].classList.replace('bg-mustard', 'bg-white');
+                }
+            });
+
+            if (tab === 'map') {
+                panelMap.classList.remove('hidden');
+                panelItin.classList.add('hidden');
+                panelSplit.classList.add('hidden');
+            } else if (tab === 'itinerary') {
+                panelMap.classList.add('hidden');
+                panelItin.classList.remove('hidden');
+                panelSplit.classList.add('hidden');
+            } else if (tab === 'split') {
+                panelMap.classList.add('hidden');
+                panelItin.classList.add('hidden');
+                panelSplit.classList.remove('hidden', 'lg:hidden');
+            }
+        }
+
+        // 視窗尺寸變化時確保桌面版佈局正確
+        window.addEventListener('resize', () => {
+            if (window.innerWidth >= 1024) {
+                document.getElementById('panel-map').classList.remove('hidden');
+                switchDesktopRightTab(desktopRightTab);
+            } else {
+                switchMobileTab(mobileTab);
+            }
+        });
+
+        // ==========================================
+        // 4. 5人畢業旅行分帳計算機邏輯 (localStorage)
+        // ==========================================
+        const STORAGE_KEY_MEMBERS = 'tainan_trip_members_v1';
+        const STORAGE_KEY_EXPENSES = 'tainan_trip_expenses_v1';
+
+        const defaultMembers = [
+            '大叔A (駕駛)',
+            '大叔B',
+            '大叔C',
+            '大叔D',
+            '大叔E'
+        ];
+
+        const defaultExpenses = [
+            { id: 1, title: '油資與國道過路費', amount: 1800, payerIdx: 0, splitWith: [0, 1, 2, 3, 4] },
+            { id: 2, title: '隱田山房 Day1 午餐', amount: 2450, payerIdx: 1, splitWith: [0, 1, 2, 3, 4] },
+            { id: 3, title: '台南安平AP7民宿住宿費', amount: 6500, payerIdx: 2, splitWith: [0, 1, 2, 3, 4] },
+            { id: 4, title: '海鮮島水產活物台菜晚餐', amount: 3800, payerIdx: 0, splitWith: [0, 1, 2, 3, 4] },
+            { id: 5, title: '七股黑琵食堂 Day2 午餐', amount: 2200, payerIdx: 3, splitWith: [0, 1, 2, 3, 4] },
+            { id: 6, title: '社頭四季花園咖啡下午茶', amount: 1350, payerIdx: 4, splitWith: [0, 1, 2, 3, 4] }
+        ];
+
+        let members = [];
+        let expenses = [];
+
+        function loadSplitData() {
+            try {
+                const savedMembers = localStorage.getItem(STORAGE_KEY_MEMBERS);
+                const savedExpenses = localStorage.getItem(STORAGE_KEY_EXPENSES);
+                members = savedMembers ? JSON.parse(savedMembers) : [...defaultMembers];
+                expenses = savedExpenses ? JSON.parse(savedExpenses) : JSON.parse(JSON.stringify(defaultExpenses));
+            } catch (e) {
+                members = [...defaultMembers];
+                expenses = JSON.parse(JSON.stringify(defaultExpenses));
+            }
+        }
+
+        function saveSplitData() {
+            try {
+                localStorage.setItem(STORAGE_KEY_MEMBERS, JSON.stringify(members));
+                localStorage.setItem(STORAGE_KEY_EXPENSES, JSON.stringify(expenses));
+            } catch (e) {
+                console.warn('無法儲存至 localStorage');
+            }
+        }
+
+        function resetDemoExpenses() {
+            members = [...defaultMembers];
+            expenses = JSON.parse(JSON.stringify(defaultExpenses));
+            saveSplitData();
+            renderAllSplitUI();
+            showToast('已重置為台南畢旅預設範例帳本！', '🔄');
+        }
+
+        function updateMemberName(idx, newName) {
+            const trimmed = newName.trim();
+            if (trimmed) {
+                members[idx] = trimmed;
+                saveSplitData();
+                renderPayerAndSplitOptions();
+                renderSettlement();
+                renderExpenseList();
+            }
+        }
+
+        function renderMembersEditor() {
+            const container = document.getElementById('members-editor');
+            container.innerHTML = members.map((name, idx) => `
+                <div class="relative">
+                    <input type="text" value="${escapeHtml(name)}" 
+                           onchange="updateMemberName(${idx}, this.value)"
+                           class="w-full px-2.5 py-1 text-xs font-bold bg-white border border-ink rounded-lg focus:outline-none focus:border-day1 focus:ring-1 focus:ring-day1"
+                           title="點擊修改同學名稱">
+                </div>
+            `).join('');
+        }
+
+        function renderPayerAndSplitOptions() {
+            const payerSelect = document.getElementById('exp-payer');
+            const currentPayer = payerSelect.value || '0';
+            payerSelect.innerHTML = members.map((name, idx) => `
+                <option value="${idx}" ${String(idx) === currentPayer ? 'selected' : ''}>${escapeHtml(name)}</option>
+            `).join('');
+
+            const checkboxesContainer = document.getElementById('split-members-checkboxes');
+            checkboxesContainer.innerHTML = members.map((name, idx) => `
+                <label class="inline-flex items-center gap-1 px-2.5 py-1 rounded-lg bg-white border border-ink/60 text-xs font-bold cursor-pointer hover:bg-washiDark select-none">
+                    <input type="checkbox" name="splitMember" value="${idx}" checked class="accent-day1 rounded">
+                    <span>${escapeHtml(name)}</span>
+                </label>
+            `).join('');
+        }
+
+        function selectAllSplitMembers() {
+            document.querySelectorAll('input[name="splitMember"]').forEach(cb => cb.checked = true);
+        }
+
+        function addExpense(event) {
+            event.preventDefault();
+            const titleInput = document.getElementById('exp-title');
+            const amountInput = document.getElementById('exp-amount');
+            const payerSelect = document.getElementById('exp-payer');
+
+            const title = titleInput.value.trim();
+            const amount = parseFloat(amountInput.value);
+            const payerIdx = parseInt(payerSelect.value, 10);
+
+            const checkedBoxes = Array.from(document.querySelectorAll('input[name="splitMember"]:checked'));
+            const splitWith = checkedBoxes.map(cb => parseInt(cb.value, 10));
+
+            if (!title || isNaN(amount) || amount <= 0) {
+                showToast('請輸入正確的消費項目與金額！', '⚠️');
+                return;
+            }
+            if (splitWith.length === 0) {
+                showToast('請至少勾選 1 位分攤成員！', '⚠️');
+                return;
+            }
+
+            expenses.unshift({
+                id: Date.now(),
+                title,
+                amount,
+                payerIdx,
+                splitWith
+            });
+
+            saveSplitData();
+            titleInput.value = '';
+            amountInput.value = '';
+            selectAllSplitMembers();
+            renderSettlement();
+            renderExpenseList();
+            showToast(`已新增「${title}」$${amount.toLocaleString()}`, '✅');
+        }
+
+        function deleteExpense(id) {
+            expenses = expenses.filter(e => e.id !== id);
+            saveSplitData();
+            renderSettlement();
+            renderExpenseList();
+            showToast('已刪除該筆支出紀錄', '🗑️');
+        }
+
+        // 計算最簡轉帳結算演算法
+        function calculateSettlement() {
+            const paid = [0, 0, 0, 0, 0];
+            const owed = [0, 0, 0, 0, 0];
+            let totalCost = 0;
+
+            expenses.forEach(exp => {
+                totalCost += exp.amount;
+                if (exp.payerIdx >= 0 && exp.payerIdx < 5) {
+                    paid[exp.payerIdx] += exp.amount;
+                }
+                const count = exp.splitWith.length;
+                if (count > 0) {
+                    const share = exp.amount / count;
+                    exp.splitWith.forEach(mIdx => {
+                        if (mIdx >= 0 && mIdx < 5) {
+                            owed[mIdx] += share;
+                        }
+                    });
+                }
+            });
+
+            // 計算淨收支 (正數代表應收回錢，負數代表應付錢出去)
+            const balances = members.map((name, idx) => ({
+                idx,
+                name,
+                paid: paid[idx],
+                owed: owed[idx],
+                net: paid[idx] - owed[idx]
+            }));
+
+            // 貪婪演算法計算最簡轉帳路徑
+            const debtors = balances.filter(b => b.net < -0.5).map(b => ({ ...b, amount: -b.net })).sort((a, b) => b.amount - a.amount);
+            const creditors = balances.filter(b => b.net > 0.5).map(b => ({ ...b, amount: b.net })).sort((a, b) => b.amount - a.amount);
+
+            const transactions = [];
+            let i = 0, j = 0;
+
+            while (i < debtors.length && j < creditors.length) {
+                const debtor = debtors[i];
+                const creditor = creditors[j];
+                const transferAmount = Math.min(debtor.amount, creditor.amount);
+
+                if (transferAmount >= 1) {
+                    transactions.push({
+                        from: debtor.name,
+                        to: creditor.name,
+                        amount: Math.round(transferAmount)
+                    });
+                }
+
+                debtor.amount -= transferAmount;
+                creditor.amount -= transferAmount;
+
+                if (debtor.amount < 0.5) i++;
+                if (creditor.amount < 0.5) j++;
+            }
+
+            return { totalCost, balances, transactions };
+        }
+
+        function renderSettlement() {
+            const { totalCost, balances, transactions } = calculateSettlement();
+
+            document.getElementById('total-trip-cost').textContent = `總花費：$${Math.round(totalCost).toLocaleString()}`;
+
+            // 渲染個人收支小卡
+            const balancesContainer = document.getElementById('member-balances-list');
+            balancesContainer.innerHTML = balances.map(b => {
+                const netRounded = Math.round(b.net);
+                let statusText = '兩清';
+                let statusColor = 'text-inkLight';
+                if (netRounded > 0) {
+                    statusText = `應收 +$${netRounded.toLocaleString()}`;
+                    statusColor = 'text-matcha';
+                } else if (netRounded < 0) {
+                    statusText = `應付 -$${Math.abs(netRounded).toLocaleString()}`;
+                    statusColor = 'text-day1';
+                }
+                return `
+                    <div class="bg-white p-2 rounded-lg border border-ink/30">
+                        <div class="font-black text-ink truncate">${escapeHtml(b.name)}</div>
+                        <div class="text-[11px] text-inkLight">墊 $${Math.round(b.paid).toLocaleString()}</div>
+                        <div class="font-black ${statusColor} mt-0.5">${statusText}</div>
+                    </div>
+                `;
+            }).join('');
+
+            // 渲染最簡轉帳路徑
+            const txContainer = document.getElementById('settlement-transactions');
+            if (transactions.length === 0) {
+                txContainer.innerHTML = `<div class="text-xs text-inkLight py-1">🎉 目前大家收支平衡，無需轉帳！</div>`;
+            } else {
+                txContainer.innerHTML = transactions.map(tx => `
+                    <div class="flex items-center justify-between bg-washi px-2.5 py-1.5 rounded-lg border border-ink/20 text-xs sm:text-sm">
+                        <div class="flex items-center gap-1.5 flex-wrap">
+                            <span class="font-black text-day1">${escapeHtml(tx.from)}</span>
+                            <span class="text-inkLight">給</span>
+                            <span class="font-black text-matcha">${escapeHtml(tx.to)}</span>
+                        </div>
+                        <span class="font-black text-ink bg-mustard/50 px-2 py-0.5 rounded">$${tx.amount.toLocaleString()}</span>
+                    </div>
+                `).join('');
+            }
+        }
+
+        function renderExpenseList() {
+            const listContainer = document.getElementById('expense-list');
+            document.getElementById('expense-count').textContent = expenses.length;
+
+            if (expenses.length === 0) {
+                listContainer.innerHTML = `<div class="text-center text-xs text-inkLight py-6 bg-washi rounded-xl border border-dashed border-ink/30">尚無支出紀錄，請從上方新增第一筆花費吧！</div>`;
+                return;
+            }
+
+            listContainer.innerHTML = expenses.map(exp => {
+                const payerName = members[exp.payerIdx] || '未知';
+                const splitLabel = exp.splitWith.length === 5 
+                    ? '5人全體均分' 
+                    : `${exp.splitWith.length}人均分 (${exp.splitWith.map(i => members[i]).join('、')})`;
+
+                return `
+                    <div class="bg-washi p-2.5 rounded-xl border border-ink/40 flex items-center justify-between gap-2">
+                        <div class="min-w-0 flex-1">
+                            <div class="flex items-center gap-2">
+                                <span class="text-sm font-black text-ink truncate">${escapeHtml(exp.title)}</span>
+                                <span class="text-xs font-black text-day1 shrink-0">$${exp.amount.toLocaleString()}</span>
+                            </div>
+                            <div class="text-[11px] text-inkLight mt-0.5 truncate">
+                                墊付：<strong class="text-ink">${escapeHtml(payerName)}</strong> ｜ ${escapeHtml(splitLabel)}
+                            </div>
+                        </div>
+                        <button onclick="deleteExpense(${exp.id})" title="刪除此筆紀錄"
+                                class="shrink-0 w-7 h-7 rounded-lg bg-white hover:bg-day1 hover:text-white text-inkLight border border-ink/30 flex items-center justify-center text-xs font-bold transition">
+                            ✕
+                        </button>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        function renderAllSplitUI() {
+            renderMembersEditor();
+            renderPayerAndSplitOptions();
+            renderSettlement();
+            renderExpenseList();
+        }
+
+        // 一鍵複製結算明細 (使用 document.execCommand 確保在 iframe 內穩定運作)
+        function copySettlementToClipboard() {
+            const { totalCost, balances, transactions } = calculateSettlement();
+            let text = `🚗【台南五專畢業旅行 12/5-12/6 分帳明細】\n`;
+            text += `總花費：$${Math.round(totalCost).toLocaleString()} 元\n`;
+            text += `------------------------\n`;
+            text += `📊 個人墊付與收支：\n`;
+            balances.forEach(b => {
+                const net = Math.round(b.net);
+                const status = net > 0 ? `應收 +$${net.toLocaleString()}` : (net < 0 ? `應付 -$${Math.abs(net).toLocaleString()}` : '兩清');
+                text += `• ${b.name}：墊 $${Math.round(b.paid).toLocaleString()}（${status}）\n`;
+            });
+            text += `------------------------\n`;
+            text += `💸 轉帳結算建議：\n`;
+            if (transactions.length === 0) {
+                text += `大家已兩清，無需轉帳！\n`;
+            } else {
+                transactions.forEach(tx => {
+                    text += `👉 ${tx.from} 轉給 ${tx.to}：$${tx.amount.toLocaleString()} 元\n`;
+                });
+            }
+
+            const textarea = document.createElement('textarea');
+            textarea.value = text;
+            textarea.style.position = 'fixed';
+            textarea.style.opacity = '0';
+            document.body.appendChild(textarea);
+            textarea.select();
+            try {
+                document.execCommand('copy');
+                showToast('已複製結算明細！可直接貼上 LINE 群組', '📋');
+            } catch (err) {
+                showToast('複製失敗，請手動選取文字', '⚠️');
+            }
+            document.body.removeChild(textarea);
+        }
+
+        function showToast(msg, icon = '✅') {
+            const toast = document.getElementById('toast-message');
+            document.getElementById('toast-text').textContent = msg;
+            document.getElementById('toast-icon').textContent = icon;
+            toast.classList.remove('hidden');
+            clearTimeout(window._toastTimer);
+            window._toastTimer = setTimeout(() => {
+                toast.classList.add('hidden');
+            }, 2800);
+        }
+
+        function escapeHtml(str) {
+            return String(str)
+                .replace(/&/g, '&amp;')
+                .replace(/</g, '&lt;')
+                .replace(/>/g, '&gt;')
+                .replace(/"/g, '&quot;');
+        }
+
+        // ==========================================
+        // 5. 初始化執行
+        // ==========================================
+        window.addEventListener('DOMContentLoaded', () => {
+            renderTimeline();
+            selectStop('yujing-market');
+            loadSplitData();
+            renderAllSplitUI();
+        });
+    </script>
+</body>
+</html>
